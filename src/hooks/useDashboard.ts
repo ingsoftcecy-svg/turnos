@@ -130,6 +130,18 @@ export function useDashboard() {
             if (!parsed.colorTanks) parsed.colorTanks = [];
             if (!parsed.emoTanks) parsed.emoTanks = [];
             
+            // Compatibilidad con datos históricos o subidos por Excel que usan "tank" y "value"
+            parsed.colorTanks = parsed.colorTanks.map((t: any) => ({
+                ...t,
+                v1: t.v1 !== undefined && t.v1 !== "" ? t.v1 : t.tank || '',
+                v2: t.v2 !== undefined && t.v2 !== "" ? t.v2 : t.value || ''
+            }));
+            parsed.emoTanks = parsed.emoTanks.map((t: any) => ({
+                ...t,
+                v1: t.v1 !== undefined && t.v1 !== "" ? t.v1 : t.tank || '',
+                v2: t.v2 !== undefined && t.v2 !== "" ? t.v2 : t.value || ''
+            }));
+            
             // Arreglar la fecha
             if (parsed.date) {
                 parsed.date = parseExcelDate(parsed.date);
