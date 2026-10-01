@@ -1,49 +1,39 @@
 # Entrega de Turno - Dashboard
 
-Este es un proyecto desarrollado con React, Vite y TypeScript para gestionar y visualizar las métricas y reportes de entregas de turno. Está diseñado para monitorear y dar seguimiento a diferentes indicadores de un proceso industrial (presumiblemente cervecero, dado que evalúa marcas como Corona, Modelo, Pacífico, Victoria, etc., e incluye métricas de "filtración", "mosto" y especificaciones químicas de marcas).
+Este es un proyecto desarrollado con React, Vite y TypeScript para gestionar y visualizar las métricas y reportes de entregas de turno. Está diseñado para monitorear y dar seguimiento a diferentes indicadores de un proceso industrial (evaluando marcas como Corona, Modelo, Pacífico, Victoria, etc., e incluyendo métricas de filtración, mosto y especificaciones químicas).
 
 ## 🚀 Tecnologías
 
 * **React 19**: Biblioteca principal para la interfaz de usuario.
 * **Vite**: Herramienta de compilación y servidor de desarrollo ultrarrápido.
 * **TypeScript**: Tipado estático para mayor seguridad y mantenibilidad del código.
-* **Firebase (Firestore)**: Base de datos NoSQL usada para almacenar la gran cantidad de reportes e historiales de turnos.
-* **Recharts & Lucide React**: Bibliotecas para la interfaz y visualización de iconos y datos.
-* **XLSX**: Biblioteca para manejar procesamiento de archivos de Excel.
+* **Firebase (Firestore)**: Base de datos NoSQL usada para almacenar la gran cantidad de reportes e historiales de turnos a través de su API REST.
+* **Lucide React**: Biblioteca para la iconografía de la interfaz.
 
-## 📂 Estructura del Proyecto e Información de Archivos
+## 📂 Estructura del Proyecto
 
-A continuación, se detalla qué hace cada archivo y directorio dentro del código fuente (`src/`):
+El proyecto está diseñado bajo un estándar de modularidad y Programación Orientada a Objetos (POO), cuidando que ningún componente sea demasiado complejo. 
 
 ### Directorio Principal (`src/`)
-
-* **`main.tsx`**: Es el punto de entrada principal de la aplicación. Configura la renderización inicial de React y monta el componente raíz (`<App />`) en el elemento principal de la página HTML.
-* **`App.tsx`**: Es el componente contenedor (Layout principal). Contiene la estructura básica de la vista, como la cabecera y el botón de "Modo TV". Este modo de TV aplica un zoom mediante CSS para que la aplicación se pueda leer correctamente si es proyectada en una pantalla en piso de producción. Renderiza internamente la tabla de datos principal.
-* **`firebase.ts`**: Inicializa y exporta la conexión de la aplicación web con los servicios de Google Firebase usando las variables de entorno de Vite.
-* **`types.ts`**: Contiene las definiciones estáticas o *interfaces* de TypeScript que estructuran los datos del dominio de la aplicación. Por ejemplo, define qué campos exactos tiene un reporte de turno (`ShiftEntry`) y sus mediciones de tanques.
-* **`index.css` & `App.css`**: Archivos que almacenan los estilos CSS globales que definen la apariencia y estética del sistema de visualización.
+* **`main.tsx`**: Es el punto de entrada principal de la aplicación. Configura la renderización inicial de React.
+* **`App.tsx`**: Layout principal. Contiene la estructura básica de la vista, como la cabecera y el botón de "Modo TV". Renderiza internamente la tabla de datos principal.
+* **`types.ts`**: Contiene las definiciones estáticas (interfaces) de TypeScript que estructuran los datos del dominio de la aplicación (`ShiftEntry`, tanques, etc.).
+* **`index.css`**: Archivo que almacena los estilos CSS globales que definen la apariencia de la tabla y celdas.
 
 ### Directorio de Componentes (`src/components/`)
-
-* **`MainTable.tsx`**: El componente más complejo y el núcleo visual del proyecto. Es una extensa tabla que desglosa detalladamente todos los turnos organizados por fechas (agrupándolos por semanas y meses en un "acordeón"). Permite la **edición directa** (inline) de los valores. Incluye una lógica robusta de colorimetría para advertir si las mediciones registradas están fuera de especificaciones predefinidas de los productos (`COLOR_SPECS`, `P_SPECS`).
-* **`ShiftForm.tsx`**: Un componente que despliega una ventana modal con un formulario muy completo para agregar una nueva entrega de turno o reporte manualmente en el sistema, pidiendo llenar todas las métricas.
-* **`UploadData.css`**: Archivo de estilos adicionales para elementos de subida de información.
+* **`MainTable.tsx`**: El núcleo visual del proyecto. Muestra una tabla masiva y editable donde se registran y leen los datos. En lugar de modales, los usuarios ingresan los datos haciendo clic y escribiendo directamente sobre cada celda (edición en línea).
+* **`ShiftTableHeader.tsx`**: Contiene la definición de las cabeceras de la tabla.
+* **`ShiftTableRow.tsx`**: Renderiza una fila individual para un turno en la tabla.
+* **`EditableCell.tsx`**: Componente funcional y reutilizable para representar cada celda editable, manteniendo el código limpio y evitando repeticiones.
 
 ### Directorio de Hooks (`src/hooks/`)
-
-* **`useDashboard.ts`**: Es un *Hook* personalizado de React encargado de la lógica de datos e interacción con Firestore:
-    * Se encarga de **descargar (fetch)** todos los reportes de turno desde la base de datos Firestore optimizadamente a través de la API REST de Google.
-    * Estandariza fechas que pueden venir de registros antiguos o de Excel a un formato leíble.
-    * Provee funciones vitales para el funcionamiento interactivo de la página: `saveEntry` (para crear o modificar) y `deleteEntry` (para eliminar filas), manejando al mismo tiempo el estado en la interfaz para que los cambios se reflejen de inmediato.
+* **`useDashboard.ts`**: Es el controlador maestro encargado de la lógica de datos e interacción con Firestore:
+    * Se encarga de descargar todos los reportes desde la base de datos Firestore de forma optimizada a través de la API REST de Google (evitando depender del SDK pesado de Firebase).
+    * Provee funciones vitales para el funcionamiento interactivo: `saveEntry` (para crear/modificar registros vía peticiones PATCH en tiempo real) y `deleteEntry` (para eliminar filas).
 
 ### Directorio de Utilidades (`src/utils/`)
-
-* **`firestoreSerializer.ts`**: Archivo utilitario diseñado para ayudar al hook `useDashboard.ts`. Transforma los objetos o diccionarios nativos de JavaScript al formato estricto y tipado de árbol que exige la API REST oficial de Firestore (ej. transformando cadenas a `{ stringValue: "..." }`).
-
-### Otros archivos y directorios
-
-* **`src/types/index.ts`**: Define tipos de datos con respecto a dimensiones, y KPIs ("DataPoint", "KPI", etc.).
-* **`src/assets/`**: Un directorio común para ubicar archivos estáticos y recursos como las imágenes que usa el proyecto (logos de React, Vite, hero.png).
+* **`ColorEvaluator.ts`**: Clase estática que aplica los principios de Programación Orientada a Objetos para evaluar las especificaciones químicas. Contiene los diccionarios de rangos válidos (`COLOR_SPECS`, `P_SPECS`) y provee las funciones matemáticas para colorear los valores de verde o rojo.
+* **`firestoreSerializer.ts`**: Utilidad puente que procesa las fechas estilo Excel y serializa cómo los objetos de TypeScript se envían y reciben en el formato estricto de la API de Firebase.
 
 ## ⚙️ Configuración y Ejecución
 
@@ -54,8 +44,7 @@ Para levantar el proyecto en un entorno de desarrollo local, sigue estos pasos:
    ```bash
    npm install
    ```
-3. Configura tus variables de entorno para la conexión de Firebase. Necesitarás tener un archivo `.env` en la raíz de tu proyecto con las claves correspondientes (`VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, etc.).
-4. Ejecuta el servidor de desarrollo en modo rápido:
+3. Ejecuta el servidor de desarrollo en modo rápido:
    ```bash
    npm run dev
    ```
@@ -66,4 +55,4 @@ Para compilar y empaquetar la aplicación de manera optimizada y lista para subi
 ```bash
 npm run build
 ```
-Este comando construirá tu aplicación dentro del directorio `dist/`.
+Este comando construirá tu aplicación lista para producción dentro del directorio `dist/`.
