@@ -12,9 +12,6 @@ interface ShiftTableRowProps {
   deleteEntry: (id: string) => void;
 }
 
-/**
- * Represents a single row in the MainTable, handling all edits for a shift entry.
- */
 export function ShiftTableRow({ 
   log, 
   isConfigMode, 
@@ -33,14 +30,14 @@ export function ShiftTableRow({
   const onEmoUpdate = (index: number, field: keyof EMOMeasurement) => (val: string) => handleEmoUpdate(log.id, index, field, val);
 
   return (
-    <tr style={{ backgroundColor: '#fff', borderBottom: '1px solid #ddd', color: '#000' }}>
-      <EditableCell type="date" value={log.date} onChange={onUpdate('date')} />
+    <tr>
+      <EditableCell type="date" value={log.date} onChange={onUpdate('date')} textAlign="center" />
       <EditableCell value={log.shift} onChange={onUpdate('shift')} />
-      <EditableCell value={log.owner} onChange={onUpdate('owner')} textAlign="left" paddingLeft="8px" />
+      <EditableCell value={log.owner} onChange={onUpdate('owner')} />
       
-      <EditableCell value={log.fallaEquipos} onChange={onUpdate('fallaEquipos')} color="#000" />
-      <EditableCell value={log.fallasExternas} onChange={onUpdate('fallasExternas')} color="#000" />
-      <EditableCell value={log.precursores} onChange={onUpdate('precursores')} color="#000" />
+      <EditableCell value={log.fallaEquipos} onChange={onUpdate('fallaEquipos')} />
+      <EditableCell value={log.fallasExternas} onChange={onUpdate('fallasExternas')} />
+      <EditableCell value={log.precursores} onChange={onUpdate('precursores')} />
       <EditableCell value={log.acumulado} onChange={onUpdate('acumulado')} />
       
       {/* Color T1 */}
@@ -50,7 +47,6 @@ export function ShiftTableRow({
         value={cT1.v2} 
         onChange={onColorUpdate(0, 'v2')} 
         color={ColorEvaluator.getColorForSpec(cT1.brand, cT1.v2)} 
-        borderRight="2px solid #555" 
       />
       
       {/* Color T2 */}
@@ -62,8 +58,8 @@ export function ShiftTableRow({
         color={ColorEvaluator.getColorForSpec(cT2.brand, cT2.v2)} 
       />
       
-      <EditableCell value={log.tiempoResidencia} onChange={onUpdate('tiempoResidencia')} color="#000" />
-      <EditableCell value={log.tiempoFiltracion} onChange={onUpdate('tiempoFiltracion')} color="#000" />
+      <EditableCell value={log.tiempoResidencia} onChange={onUpdate('tiempoResidencia')} />
+      <EditableCell value={log.tiempoFiltracion} onChange={onUpdate('tiempoFiltracion')} />
       
       {/* EMO T1 */}
       <EditableCell value={eT1.brand} onChange={onEmoUpdate(0, 'brand')} />
@@ -72,7 +68,6 @@ export function ShiftTableRow({
         value={eT1.v2} 
         onChange={onEmoUpdate(0, 'v2')} 
         color={ColorEvaluator.getColorForSpecP(eT1.brand, eT1.v2)} 
-        borderRight="2px solid #555" 
       />
       
       {/* EMO T2 */}
@@ -85,14 +80,14 @@ export function ShiftTableRow({
       />
 
       <EditableCell value={log.volumenMosto} onChange={onUpdate('volumenMosto')} />
-      <EditableCell value={log.hld} onChange={onUpdate('hld')} color="#000" />
+      <EditableCell value={log.hld} onChange={onUpdate('hld')} />
       <EditableCell value={log.faltas} onChange={onUpdate('faltas')} />
       <EditableCell value={log.tiempoExtra} onChange={onUpdate('tiempoExtra')} />
       <EditableCell value={log.ato} onChange={onUpdate('ato')} />
       
       {isConfigMode && (
-        <td style={{ border: 'none', backgroundColor: '#fff', verticalAlign: 'middle', paddingLeft: '5px' }}>
-          <button onClick={() => deleteEntry(log.id)} style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer' }}>
+        <td className="admin-actions" style={{ border: '1px solid var(--border-soft)', backgroundColor: '#fff', verticalAlign: 'middle' }}>
+          <button onClick={() => deleteEntry(log.id)} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Trash2 size={16} />
           </button>
         </td>

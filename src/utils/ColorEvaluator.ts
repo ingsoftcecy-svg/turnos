@@ -46,23 +46,38 @@ export class ColorEvaluator {
    */
   public static normalizeBrand(brand: string): string {
     const b = brand.toLowerCase().trim();
-    if (b.includes('michelob')) return 'MICHELOB ULTRA';
-    if (b.includes('negra mod') || b.includes('nrgra mod')) return 'NEGRA MODELO';
+    
+    // Abreviaciones comunes de los operadores
+    if (b === 'bl' || b.includes('bud light')) return 'BUD LIGHT';
+    if (b === 'mu' || b.includes('michelob')) return 'MICHELOB ULTRA';
+    if (b === 'nm' || b.includes('negra mod') || b.includes('nrgra mod')) return 'NEGRA MODELO';
     if (b.includes('chocolate')) return 'NEGRA CHOCOLATE';
     if (b.includes('pura malta')) return 'MODELO PURA MALTA';
-    if (b.includes('modelo es') || b === 'modelo' || b === 'modelo e') return 'MODELO';
-    if (b.includes('corona e-p')) return 'CORONA E-P';
-    if (b.includes('corona')) return 'CORONA';
-    if (b.includes('bud light')) return 'BUD LIGHT';
+    
+    // Variantes de Modelo
+    if (b === 'mod e' || b === 'mode' || b.includes('modelo es') || b === 'modelo' || b === 'modelo e' || b === 'mod') return 'MODELO';
+    
+    // Variantes de Corona
+    if (b === 'cor e' || b === 'core' || b.includes('corona e-p')) return 'CORONA E-P';
+    if (b === 'cor' || b.includes('corona')) return 'CORONA';
+    
     if (b.includes('budweiser')) return 'BUDWEISER';
-    if (b.includes('pacifico sl') || b.includes('pacifico suave')) return 'PACIFICO SUAVE';
-    if (b.includes('pacifico l')) return 'PACIFICO LIGHT';
-    if (b.includes('pacifico')) return 'PACIFICO';
-    if (b.includes('victoria')) return 'VICTORIA';
+    
+    // Variantes de Pacifico
+    if (b === 'pac s' || b === 'pac suave' || b.includes('pacifico sl') || b.includes('pacifico suave')) return 'PACIFICO SUAVE';
+    if (b === 'pac l' || b === 'pac light' || b.includes('pacifico l')) return 'PACIFICO LIGHT';
+    if (b === 'pac' || b.includes('pacifico')) return 'PACIFICO';
+    
+    // Otras marcas
+    if (b === 'vic' || b.includes('victoria')) return 'VICTORIA';
     if (b.includes('estrella')) return 'ESTRELLA';
     if (b.includes('golden')) return 'GOLDEN LIGHT';
     if (b.includes('flying')) return 'FLYING FISH';
     if (b.includes('clsh')) return 'CLSH';
+    
+    // Marcas nuevas detectadas
+    if (b === 'barr' || b.includes('barrilito')) return 'BARRILITO'; // Note: if missing from specs, it will default to black, which is safe.
+    
     return b.toUpperCase();
   }
 

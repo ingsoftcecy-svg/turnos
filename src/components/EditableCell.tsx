@@ -6,44 +6,33 @@ interface EditableCellProps {
   color?: string;
   textAlign?: 'left' | 'center' | 'right';
   type?: 'text' | 'date' | 'number';
-  paddingLeft?: string;
-  borderRight?: string;
 }
 
-/**
- * A reusable table cell with an editable input field.
- */
 export const EditableCell: React.FC<EditableCellProps> = ({ 
   value, 
   onChange, 
   color, 
   textAlign = 'center', 
-  type = 'text',
-  paddingLeft,
-  borderRight
+  type = 'text'
 }) => {
-  const cellStyle: React.CSSProperties = {
-    border: '1px solid #ddd',
-    borderRight: borderRight || '1px solid #ddd'
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    border: 'none',
-    textAlign,
-    color: color || 'inherit',
-    backgroundColor: 'transparent',
-    paddingLeft,
-    padding: type === 'date' ? '8px 0' : undefined
-  };
+  const isZero = value === "0" || value === "";
+  const displayColor = color && color !== "#000" ? color : undefined;
+  
+  let inputClasses = "editable-input";
+  if (isZero && !displayColor) inputClasses += " text-dim";
+  if (displayColor) inputClasses += " brand-text";
 
   return (
-    <td style={cellStyle}>
+    <td>
       <input 
         type={type} 
-        value={value} 
-        onChange={e => onChange(e.target.value)} 
-        style={inputStyle} 
+        value={typeof value === 'string' ? value.toUpperCase() : value} 
+        onChange={e => onChange(e.target.value.toUpperCase())} 
+        className={inputClasses}
+        style={{ 
+          textAlign,
+          color: displayColor
+        }} 
       />
     </td>
   );
